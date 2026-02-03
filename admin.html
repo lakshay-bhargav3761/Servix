@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servix - Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Admin Dashboard -->
+        <div id="adminDashboardPage" class="page active">
+            <nav class="navbar navbar-dashboard">
+                <div class="container">
+                    <div class="nav-brand">
+                        <div class="logo">S</div>
+                        <span class="brand-name">Servix Admin</span>
+                    </div>
+                    <div class="nav-user">
+                        <div class="profile-wrapper" id="profileWrapper">
+                            <div class="user-avatar" id="userAvatar">A</div>
+                            <div class="user-info">
+                                <p class="user-name" id="userName">Admin</p>
+                                <p class="user-role" id="userRole">Administrator</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-menu" id="profileMenu">
+                            <button id="logoutBtn">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Tabs Navigation -->
+            <div class="tabs-navigation">
+                <div class="container">
+                    <button onclick="showTab('analytics')" class="tab-btn active" data-tab="analytics">Analytics</button>
+                    <button onclick="showTab('allRequests')" class="tab-btn" data-tab="allRequests">All Requests</button>
+                   
+                    <button onclick="showTab('breached')" class="tab-btn" data-tab="breached">Breached Requests</button>
+                    <button onclick="showTab('slaRules')" class="tab-btn" data-tab="slaRules">SLA Management</button>
+                    <button onclick="showTab('staffPerformance')" class="tab-btn" data-tab="staffPerformance">
+  Staff Performance
+</button>
+
+                    <button onclick="showTab('profile')" class="tab-btn" data-tab="profile">Profile</button>
+                </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content-wrapper">
+  <div class="container">
+                <!-- Analytics Dashboard Tab -->
+                <div id="analyticsTab" class="tab-content active">
+                    <div class="page-header">
+                        <h1>Analytics Dashboard</h1>
+                        <p>Overview of system performance and metrics</p>
+                    </div>
+
+                    <!-- Key Metrics -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <p class="stat-label">Total Requests</p>
+                                <p class="stat-value" id="analyticsTotal">0</p>
+                            </div>
+                            <div class="stat-icon stat-icon-blue">📋</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <p class="stat-label">Breach Count</p>
+                                <p class="stat-value stat-value-red" id="analyticsBreached">0</p>
+                            </div>
+                            <div class="stat-icon stat-icon-red">⚠️</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <p class="stat-label">Avg Resolution Time</p>
+                                <p class="stat-value stat-value-green" id="analyticsAvgTime">0h</p>
+                            </div>
+                            <div class="stat-icon stat-icon-green">⏱️</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <p class="stat-label">Active Staff</p>
+                                <p class="stat-value stat-value-blue" id="analyticsStaff">0</p>
+                            </div>
+                            <div class="stat-icon stat-icon-blue">👥</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="charts-grid">
+                        <div class="card chart-card">
+                            <h3 class="card-title">Request Status Distribution</h3>
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                        <div class="card chart-card">
+                            <h3 class="card-title">Priority Breakdown</h3>
+                            <canvas id="priorityChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Staff Performance -->
+                    
+                </div>
+
+                <!-- All Requests Tab -->
+                <div id="allRequestsTab" class="tab-content">
+                    <div class="page-header">
+                        <h1>All Requests</h1>
+                        <p>View and manage all service requests</p>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filter-section">
+                        <label>Category:</label>
+                        <select id="filterCategory" class="filter-select">
+                            <option value="all">All Categories</option>
+                            <option value="IT">IT</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Hostel">Hostel</option>
+                            <option value="Plumbing">Plumbing</option>
+                            <option value="Other">Other</option>
+                        </select>
+
+                        <label>SLA Status:</label>
+                        <select id="filterSLA" class="filter-select">
+                            <option value="all">All SLA Status</option>
+                            <option value="Within">Within SLA</option>
+                            <option value="Near Breach">Near Breach</option>
+                            <option value="Breached">Breached</option>
+                        </select>
+
+                        <label>Staff:</label>
+                        <select id="filterStaff" class="filter-select">
+                            <option value="all">All Staff</option>
+                            <option value="unassigned">Unassigned</option>
+                        </select>
+
+                        <button onclick="applyAllRequestsFilters()" class="btn-primary">Apply Filters</button>
+                    </div>
+
+                    <!-- Requests Table -->
+                    <div class="card table-card">
+                        <div class="table-responsive">
+                            <table class="requests-table">
+                                <thead>
+                                    <tr>
+                                        <th>Request ID</th>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>SLA Status</th>
+                                        <th>Assigned To</th>
+                                        <th>Deadline</th>
+                                        <th>Actions</th>
+                                      
+                                    </tr>
+                                </thead>
+                                <tbody id="allRequestsTable">
+                                    <tr>
+                                        <td colspan="9" class="text-center">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assign/Reassign Tab -->
+                
+
+                <!-- Breached Requests Tab -->
+                <div id="breachedTab" class="tab-content">
+                    <div class="page-header">
+                        <h1>Breached Requests</h1>
+                        <p>Manage SLA breached and time-exceeded requests</p>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <p class="stat-label">Total Breached</p>
+                                <p class="stat-value stat-value-red" id="breachedTotal">0</p>
+                            </div>
+                            <div class="stat-icon stat-icon-red">🚨</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <p class="stat-label">Critical Priority</p>
+                                <p class="stat-value stat-value-orange" id="breachedCritical">0</p>
+                            </div>
+                            <div class="stat-icon stat-icon-orange">⚡</div>
+                        </div>
+                    </div>
+
+                    <!-- Breached Requests Table -->
+                    <div class="card table-card">
+                        <div class="table-responsive">
+                            <table class="requests-table">
+                                <thead>
+                                    <tr>
+                                        <th>Request ID</th>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Priority</th>
+                                        <th>Assigned To</th>
+                                        <th>Time Exceeded</th>
+                                     
+                                    </tr>
+                                </thead>
+                                <tbody id="breachedRequestsTable">
+                                    <tr>
+                                        <td colspan="7" class="text-center">No breached requests</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLA Rules Tab -->
+                <div id="slaRulesTab" class="tab-content">
+                    <div class="page-header">
+                        <h1>SLA Management</h1>
+                        <p>Configure SLA rules and timeframes</p>
+                    </div>
+
+                    <!-- Current SLA Rules -->
+                    <div class="card">
+                        <h3 class="card-title">Current SLA Rules</h3>
+                        <div class="table-responsive">
+                            <table class="requests-table">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Priority</th>
+                                        <th>Allowed Time</th>
+                                        <th>Warning Threshold</th>
+                                       
+                                    </tr>
+                                </thead>
+                                <tbody id="slaRulesTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Add/Edit SLA Rule -->
+                    <div class="card">
+                        <h3 class="card-title">Add/Edit SLA Rule</h3>
+                        <form id="slaRuleForm" class="sla-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Category *</label>
+                                    <select id="slaCategory" required>
+                                        <option value="">Select category</option>
+                                        <option value="IT">IT</option>
+                                        <option value="Electrical">Electrical</option>
+                                        <option value="Hostel">Hostel</option>
+                                        <option value="Plumbing">Plumbing</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Priority *</label>
+                                    <select id="slaPriority" required>
+                                        <option value="">Select priority</option>
+                                        <option value="High">High</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Low">Low</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Allowed Time (hours) *</label>
+                                    <input type="number" id="slaTime" min="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Warning Threshold (hours) *</label>
+                                    <input type="number" id="slaWarning" min="1" required>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Save Rule</button>
+                                <button type="reset" class="btn-secondary">Reset</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Staff Performance Tab -->
+<div id="staffPerformanceTab" class="tab-content">
+    <div class="page-header">
+        <h1>Staff Performance</h1>
+        <p>Overview of staff details and performance metrics</p>
+    </div>
+
+    <div class="card table-card">
+        <div class="table-responsive">
+            <table class="requests-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Total Assigned</th>
+                        <th>Resolved</th>
+                        <th>Breached</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody id="staffPerformanceTable">
+                    <tr>
+                        <td colspan="7" class="text-center">Loading staff data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+                <!-- Profile Tab -->
+                <div id="profileTab" class="tab-content">
+                    <div class="page-header">
+                        <h1>Profile</h1>
+                        <p>Manage your account information</p>
+                    </div>
+
+                    <div class="profile-header">
+                        <div class="profile-avatar-wrapper">
+                            <div class="profile-avatar-large" id="profileAvatar">A</div>
+                        </div>
+                        <div>
+                            <h3 id="profileName">Admin Name</h3>
+                            <p id="profileRole">Administrator</p>
+                        </div>
+                    </div>
+
+                    <form id="profileForm" class="profile-form">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="profileFullName">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="profileEmail" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Mobile Number</label>
+                            <input type="tel" id="profileMobile" placeholder="Enter mobile number">
+                        </div>
+
+                        <p id="togglePassword" class="btn-link">Forgot / Change Password?</p>
+
+                        <div id="passwordSection" style="display:none;">
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" id="newPassword">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Confirm Password</label>
+                                <input type="password" id="confirmPassword">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Request Details Modal -->
+    <div id="viewRequestModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Request Details</h2>
+                <span class="close-modal" onclick="closeViewModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="request-info-grid">
+                    <div class="info-item">
+                        <label>Request ID:</label>
+                        <span id="viewReqId">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Category:</label>
+                        <span id="viewCategory">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Priority:</label>
+                        <span id="viewPriority" class="badge">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Status:</label>
+                        <span id="viewStatus" class="badge">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>SLA Status:</label>
+                        <span id="viewSLA" class="badge">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Deadline:</label>
+                        <span id="viewDeadline">-</span>
+                    </div>
+                </div>
+
+                <div class="info-item-full">
+                    <label>Title:</label>
+                    <p id="viewTitle">-</p>
+                </div>
+
+                <div class="info-item-full">
+                    <label>Description:</label>
+                    <p id="viewDescription">-</p>
+                </div>
+
+                <div class="info-item-full">
+                    <label>Resolution Notes:</label>
+                    <p id="viewNotes">No notes yet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Staff Modal -->
+    <div id="assignModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Assign Request to Staff</h2>
+                <span class="close-modal" onclick="closeAssignModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p><strong>Request ID:</strong> <span id="assignReqId">-</span></p>
+                <p><strong>Title:</strong> <span id="assignTitle">-</span></p>
+
+                <form id="assignForm">
+                    <div class="form-group">
+                        <label>Select Staff Member *</label>
+                        <select id="assignStaff" required>
+                            <option value="">Choose staff...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Assign Request</button>
+                        <button type="button" onclick="closeAssignModal()" class="btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reassign Modal -->
+    <div id="reassignModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reassign Request</h2>
+                <span class="close-modal" onclick="closeReassignModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p><strong>Request ID:</strong> <span id="reassignReqId">-</span></p>
+                <p><strong>Current Staff:</strong> <span id="reassignCurrentStaff">-</span></p>
+
+                <form id="reassignForm">
+                    <div class="form-group">
+                        <label>Reassign to Staff *</label>
+                        <select id="reassignStaff" required>
+                            <option value="">Choose staff...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Escalate Priority</label>
+                        <select id="escalatePriority">
+                            <option value="no">No Change</option>
+                            <option value="High">Escalate to High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Reassign</button>
+                        <button type="button" onclick="closeReassignModal()" class="btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

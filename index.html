@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servix - Service Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+    <!-- Landing Page -->
+    <div id="landingPage" class="page active">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-brand">
+                    <div class="logo">S</div>
+                    <span class="brand-name">Servix</span>
+                </div>
+                <div class="nav-actions">
+                    <button onclick="showPage('login')" class="btn-link">Login</button>
+                    <button onclick="showPage('register')" class="btn-primary">Register</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">Service Request Management</h1>
+                    <p class="hero-subtitle">Streamline service requests with SLA-driven accountability</p>
+                    <button onclick="showPage('register')" class="btn-hero">Get Started</button>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📋</div>
+                        <h3>Raise Requests</h3>
+                        <p>Submit service requests quickly and track their progress in real-time</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⏰</div>
+                        <h3>SLA Tracking</h3>
+                        <p>Automated SLA monitoring ensures timely resolution of issues</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">✅</div>
+                        <h3>Role-Based Access</h3>
+                        <p>User, Staff, and Admin roles for organized workflow management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="page auth-page">
+        <div class="auth-container">
+            <div class="auth-box">
+                <div class="logo-center">
+                    <div class="logo">S</div>
+                </div>
+                <h2 class="auth-title">Login to Servix</h2>
+                
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="your.email@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-full">Login</button>
+                </form>
+
+                <p class="auth-footer">
+                    Don't have an account? 
+                    <button onclick="showPage('register')" class="btn-link">Register</button>
+                </p>
+                <button onclick="showPage('landing')" class="btn-link">← Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Page -->
+    <div id="registerPage" class="page auth-page">
+        <div class="auth-container">
+            <div class="auth-box">
+                <div class="logo-center">
+                    <div class="logo">S</div>
+                </div>
+                <h2 class="auth-title">Register for Servix</h2>
+                
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="registerName" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="registerEmail" placeholder="your.email@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="registerPassword" placeholder="••••••••" required>
+                    </div>
+                   <div class="form-group">
+  <label>Role</label>
+  <select id="registerRole" required>
+    <option value="User">User</option>
+    <option value="Staff">Staff</option>
+    <option value="Admin">Admin</option>
+  </select>
+</div>
+
+                    <button type="submit" class="btn-primary btn-full">Register</button>
+                </form>
+
+                <p class="auth-footer">
+                    Already have an account? 
+                    <button onclick="showPage('login')" class="btn-link">Login</button>
+                </p>
+                <button onclick="showPage('landing')" class="btn-link">← Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Dashboard -->
+    <div id="dashboardPage" class="page">
+        <nav class="navbar navbar-dashboard">
+            <div class="container">
+                <div class="nav-brand">
+                    <div class="logo">S</div>
+                    <span class="brand-name">Servix</span>
+                </div>
+                <div class="nav-user">
+    <div class="profile-wrapper" id="profileWrapper">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-info">
+            <p class="user-name" id="userName">User</p>
+            <p class="user-role" id="userRole">User</p>
+        </div>
+    </div>
+
+    <div class="profile-menu" id="profileMenu">
+        <button id="logoutBtn">Logout</button>
+    </div>
+</div>
+
+            </div>
+        </nav>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-navigation">
+            <div class="container">
+                <button onclick="showTab('dashboard')" class="tab-btn active" data-tab="dashboard">Dashboard</button>
+                <button onclick="showTab('raise')" class="tab-btn" data-tab="raise">Raise Request</button>
+                <button onclick="showTab('requests')" class="tab-btn" data-tab="requests">My Requests</button>
+                <button onclick="showTab('profile')" class="tab-btn" data-tab="profile">Profile</button>
+            </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="container tab-content-wrapper">
+            <!-- Dashboard Tab -->
+            <div id="dashboardTab" class="tab-content active">
+                <div class="page-header">
+                    <h1>Dashboard</h1>
+                    <p>Overview of your service requests</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <p class="stat-label">Total Requests</p>
+                            <p class="stat-value" id="totalCount">0</p>
+
+                        </div>
+                        <div class="stat-icon stat-icon-blue">📋</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <p class="stat-label">Open Requests</p>
+                            <p class="stat-value stat-value-orange" id="openCount">0</p>
+                        </div>
+                        <div class="stat-icon stat-icon-orange">⏰</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <p class="stat-label">Resolved Requests</p>
+                            <p class="stat-value stat-value-green" id="resolvedCount">0</p>
+                        </div>
+                        <div class="stat-icon stat-icon-green">✅</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <p class="stat-label">Breached Requests</p>
+                            <p class="stat-value stat-value-red" id="breachedCount">0</p>
+                        </div>
+                        <div class="stat-icon stat-icon-red">⚠️</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                   
+
+                    <div class="card">
+                        <h3 class="card-title">Recent Activity</h3>
+                       <div class="activity-list"></div>
+
+                    </div>
+                     <div class="card">
+                        <h3 class="card-title">Quick Actions</h3>
+                        <div class="quick-actions">
+                            <button onclick="showTab('raise')" class="btn-primary btn-full">
+                                Raise New Request →
+                            </button>
+                            <button onclick="showTab('requests')" class="btn-secondary btn-full">
+                                View My Requests →
+                            </button>
+                            <button id="cancelRequestBtn" class="btn-secondary danger">
+
+                            Cancel Request
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Raise Request Tab -->
+            <div id="raiseTab" class="tab-content">
+                <div class="page-header">
+                    <h1>Raise New Request</h1>
+                    <p>Submit a new service request</p>
+                </div>
+
+                <div class="card form-card center-card">
+
+                    <form id="raiseRequestForm" class="request-form">
+                        <div class="form-group">
+                            <label>Title *</label>
+                            <input type="text" id="requestTitle" placeholder="Brief description of the issue" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Category *</label>
+                                <select id="requestCategory" required>
+                                    <option value="">Select category</option>
+                                    <option value="IT">IT</option>
+                                    <option value="Electrical">Electrical</option>
+                                    <option value="Hostel">Hostel</option>
+                                    <option value="Plumbing">Plumbing</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Priority *</label>
+                                <select id="requestPriority" required>
+                                    <option value="">Select priority</option>
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description *</label>
+                            <textarea id="requestDescription" rows="6" placeholder="Provide detailed information about the issue..." required></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Submit Request</button>
+                            <button type="reset" class="btn-secondary">Reset Form</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- My Requests Tab -->
+            <div id="requestsTab" class="tab-content">
+                <div class="page-header">
+                    <h1>My Requests</h1>
+                    <p>Track all your service requests</p>
+                </div>
+
+                <div class="card table-card center-card">
+
+                    <div class="table-responsive">
+                        <table class="requests-table">
+                            <thead>
+                                <tr>
+                                    <th>Request ID</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>SLA Status</th>
+                                    <th>Time Left</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+          <div id="profileTab" class="tab-content">
+  <div class="page-header">
+    <h1>Profile</h1>
+    <p>Manage your account information</p>
+  </div>
+
+  <div class="profile-header">
+
+    <!-- AVATAR -->
+    <div class="profile-avatar-wrapper" id="avatarWrapper">
+      <div class="profile-avatar-large" id="profileAvatar">U</div>
+    </div>
+
+    <!-- USER INFO -->
+    <div>
+      <h3 id="profileName"></h3>
+      <p id="profileRole"></p>
+    </div>
+
+  </div>
+
+
+
+  <form id="profileForm" class="profile-form">
+
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="profileFullName">
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="profileEmail" disabled>
+    </div>
+    <div class="form-group">
+  <label>Mobile Number</label>
+  <input type="tel" id="profileMobile" placeholder="Enter mobile number">
+</div>
+
+   <p id="togglePassword" class="btn-link">Forgot / Change Password?</p>
+
+<div id="passwordSection" style="display:none;">
+  <div class="form-group">
+    <label>New Password</label>
+    <input type="password" id="newPassword">
+  </div>
+
+  <div class="form-group">
+    <label>Confirm Password</label>
+    <input type="password" id="confirmPassword">
+  </div>
+</div>
+
+
+    <button type="submit" class="btn-primary">Save Changes</button>
+
+  </form>
+</div>
+
+<!-- Staff Notes Modal -->
+<!-- Staff Notes Only Modal -->
+<div id="notesModal" class="notes-modal">
+  <div class="notes-card">
+    <h2 class="notes-title">Staff Notes</h2>
+
+    <div class="notes-body">
+      <p id="notesText"></p>
+    </div>
+
+    <div class="notes-actions">
+      <button class="btn-primary" onclick="closeNotesModal()">Close</button>
+    </div>
+  </div>
+</div>
+<!-- Resolution Notes Modal -->
+<div id="notesModal" class="notes-modal">
+  <div class="notes-card">
+    <h2 class="notes-title">Staff Notes</h2>
+
+    <div class="notes-body">
+      <p id="notesText">No notes yet.</p>
+    </div>
+
+    <div class="notes-actions">
+      <button class="btn-primary" onclick="closeNotesModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="auth.js"></script>
+    <script src="script.js"></script>
+    </div>
+</body>
+</html>

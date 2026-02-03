@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servix - Staff Dashboard</title>
+    <link rel="stylesheet" href="staff.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Staff Dashboard -->
+        <div id="staffDashboardPage" class="page active">
+            <nav class="navbar navbar-dashboard">
+                <div class="container">
+                    <div class="nav-brand">
+                        <div class="logo">S</div>
+                        <span class="brand-name">Servix</span>
+                    </div>
+                    <div class="nav-user">
+                        <div class="profile-wrapper" id="profileWrapper">
+                            <div class="user-avatar" id="userAvatar">S</div>
+                            <div class="user-info">
+                                <p class="user-name" id="userName">Staff</p>
+                                <p class="user-role" id="userRole">Staff</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-menu" id="profileMenu">
+                            <button id="logoutBtn">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Tabs Navigation -->
+            <div class="tabs-navigation">
+                <div class="container">
+                    <button onclick="showTab('assigned')" class="tab-btn active" data-tab="assigned">Dashboard</button>
+                    <button onclick="showTab('update')" class="tab-btn" data-tab="update">Update Status</button>
+                    <button onclick="showTab('profile')" class="tab-btn" data-tab="profile">Profile</button>
+                </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="container tab-content-wrapper">
+                <!-- Assigned Requests Tab -->
+                <div id="assignedTab" class="tab-content active">
+                    <div class="page-header">
+                        <h1>Assigned Requests</h1>
+                        <p>Requests assigned to you, sorted by urgency</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <p class="stat-label">Total Assigned</p>
+                                <p class="stat-value" id="totalAssigned">0</p>
+                            </div>
+                            <div class="stat-icon stat-icon-blue">📋</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <p class="stat-label">Pending</p>
+                                <p class="stat-value stat-value-orange" id="pendingCount">0</p>
+                            </div>
+                            <div class="stat-icon stat-icon-orange">⏰</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <p class="stat-label">In Progress</p>
+                                <p class="stat-value stat-value-blue" id="inProgressCount">0</p>
+                            </div>
+                            <div class="stat-icon stat-icon-blue">🔄</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <p class="stat-label">Breached SLA</p>
+                                <p class="stat-value stat-value-red" id="breachedCount">0</p>
+                            </div>
+                            <div class="stat-icon stat-icon-red">⚠️</div>
+                        </div>
+                    </div>
+
+                    <!-- Priority Filter -->
+                    <div class="filter-section">
+                        <label>Filter by Priority:</label>
+                        <select id="priorityFilter" class="filter-select">
+                            <option value="all">All Priorities</option>
+                            <option value="High">High Priority</option>
+                            <option value="Medium">Medium Priority</option>
+                            <option value="Low">Low Priority</option>
+                        </select>
+                        <select id="slaFilter" class="filter-select">
+                            <option value="all">All SLA Status</option>
+                            <option value="Breached">Breached</option>
+                            <option value="Near Breach">Near Breach</option>
+                            <option value="Within">Within SLA</option>
+                        </select>
+                    </div>
+
+                    <!-- Requests Table -->
+                    <div class="card table-card">
+                        <div class="table-responsive">
+                            <table class="requests-table">
+                                <thead>
+                                    <tr>
+                                        <th>Request ID</th>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>SLA Status</th>
+                                        <th>Deadline</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="assignedRequestsTable">
+                                    <tr>
+                                        <td colspan="8" class="text-center">No requests assigned</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Update Status Tab -->
+                <div id="updateTab" class="tab-content">
+                    <div class="page-header">
+                        <h1>Update Status</h1>
+                        <p>Update progress and status of assigned requests</p>
+                    </div>
+
+                    <!-- Search Request -->
+                    <div class="search-section">
+                        <div class="form-group">
+                            <label>Search by Request ID</label>
+                            <div class="search-input-wrapper">
+                                <input type="text" id="searchRequestId" placeholder="Enter Request ID (e.g., REQ001)">
+                                <button onclick="searchRequest()" class="btn-primary">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Recent Updates -->
+<div id="recentUpdatesSection" class="card" style="margin-top:20px;">
+  <h3 class="card-title">Recent Updates</h3>
+  <div id="recentUpdates" class="activity-list">
+    <p class="text-muted">No updates yet</p>
+  </div>
+</div>
+
+
+                    <!-- Request Details Card -->
+                    <div id="requestDetailsCard" class="card" style="display: none;">
+                        <h3 class="card-title">Request Details</h3>
+                        
+                        <div class="request-info-grid">
+                            <div class="info-item">
+                                <label>Request ID:</label>
+                                <span id="detailReqId">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Category:</label>
+                                <span id="detailCategory">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Priority:</label>
+                                <span id="detailPriority" class="badge">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Current Status:</label>
+                                <span id="detailStatus" class="badge">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>SLA Status:</label>
+                                <span id="detailSLA" class="badge">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Deadline:</label>
+                                <span id="detailDeadline">-</span>
+                            </div>
+                        </div>
+
+                        <div class="info-item-full">
+                            <label>Title:</label>
+                            <p id="detailTitle">-</p>
+                        </div>
+
+                        <div class="info-item-full">
+                            <label>Description:</label>
+                            <p id="detailDescription">-</p>
+                        </div>
+
+                        <hr class="divider">
+
+                        <!-- Update Status Form -->
+                        <form id="updateStatusForm">
+                            <div class="form-group">
+                                <label>Change Status *</label>
+                                <select id="newStatus" required>
+                                    <option value="">Select new status</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Waiting">Waiting</option>
+                                    <option value="Resolved">Resolved</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Resolution Notes *</label>
+                                <textarea id="resolutionNotes" rows="4" placeholder="Add notes about the progress or resolution..." ></textarea>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Save Update</button>
+                                <button type="button" onclick="clearRequestDetails()" class="btn-secondary">Clear</button>
+                            </div>
+                        </form>
+                        <hr class="divider">
+
+
+
+
+                    </div>
+
+                    <!-- Recent Updates -->
+                </div>
+                <!-- Profile Tab -->
+                <div id="profileTab" class="tab-content">
+                    <div class="page-header">
+                        <h1>Profile</h1>
+                        <p>Manage your account information</p>
+                    </div>
+
+                    <div class="profile-header">
+                        <!-- AVATAR -->
+                        <div class="profile-avatar-wrapper" id="avatarWrapper">
+                            <div class="profile-avatar-large" id="profileAvatar">S</div>
+                        </div>
+
+                        <!-- USER INFO -->
+                        <div>
+                            <h3 id="profileName">Staff Name</h3>
+                            <p id="profileRole">Staff</p>
+                        </div>
+                    </div>
+
+                    <form id="profileForm" class="profile-form">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="profileFullName">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="profileEmail" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Mobile Number</label>
+                            <input type="tel" id="profileMobile" placeholder="Enter mobile number">
+                        </div>
+
+                        <p id="togglePassword" class="btn-link">Forgot / Change Password?</p>
+
+                        <div id="passwordSection" style="display:none;">
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" id="newPassword">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Confirm Password</label>
+                                <input type="password" id="confirmPassword">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="staff.js"></script>
+</body>
+</html>
