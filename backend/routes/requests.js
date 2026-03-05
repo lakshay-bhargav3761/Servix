@@ -15,27 +15,36 @@ async function getDeadline(category, priority) {
   return new Date(Date.now() + hours * 60 * 60 * 1000);
 }
 async function getLeastLoadedStaff() {
-  const staffList = await User.find({ role: "Staff" });
+  const staff = await User.aggregate([
+    { $match: { role: "Staff" } },
+    {
+      $lookup: {
+        from: "requests",
+        localField: "_id",
+        foreignField: "assignedTo",
+        as: "assignedRequests"
+      }
+    },
+    {
+      $addFields: {
+        activeCount: {
+          $size: {
+            $filter: {
+              input: "$assignedRequests",
+              as: "r",
+              cond: { $ne: ["$$r.status", "Resolved"] }
+            }
+          }
+        }
+      }
+    },
+    { $sort: { activeCount: 1 } },
+    { $limit: 1 }
+  ]);
 
-  if (staffList.length === 0) return null;
-
-  let selected = null;
-  let min = Infinity;
-
-  for (const staff of staffList) {
-    const count = await Request.countDocuments({
-      assignedTo: staff._id,
-      status: { $ne: "Resolved" }
-    });
-
-    if (count < min) {
-      min = count;
-      selected = staff;
-    }
-  }
-
-  return selected;
+  return staff.length ? staff[0] : null;
 }
+
 
 // Calculate SLA status
 function getSlaStatus(deadline, warningHours) {
@@ -129,7 +138,8 @@ router.get("/assigned", auth, async (req, res) => {
 
   // Update SLA status
   for (const r of requests) {
-    const rule = await SlaRule.find({
+    const rule = await SlaRule.findOne({
+
       category: r.category,
       priority: r.priority
     });
