@@ -16,4 +16,7 @@ app.use("/api/auth", authRoutes)
 app.use("/api/requests", requestRoutes)
 app.use("/api/sla", require("./routes/slaRoutes"));
 const PORT = process.env.PORT || 5000
+app.get("/", (req, res) => {
+  res.send("Servix backend is running");
+});
 app.listen(PORT, () => console.log("Server running on port " + PORT))
