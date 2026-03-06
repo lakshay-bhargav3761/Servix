@@ -1,5 +1,5 @@
 let cancelMode = false;
-const API = "http://localhost:5000/api";
+const API = "/api";
 
 /* ---------------- PAGE & TAB NAVIGATION ---------------- */
 function showPage(pageName) {
